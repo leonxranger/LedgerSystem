@@ -1,0 +1,8 @@
+
+
+CREATE TABLE accounts (
+    id BIGSERIAL PRIMARY KEY,
+    code VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(50) NOT NULL
+);
