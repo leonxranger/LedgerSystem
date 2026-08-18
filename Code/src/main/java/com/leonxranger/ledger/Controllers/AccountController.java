@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import com.leonxranger.ledger.entity.Accounts;
 import com.leonxranger.ledger.Services.AccountService;
+import com.leonxranger.ledger.dto.AccountRequest;
 import com.leonxranger.ledger.entity.AccountType;
-@RestController("/accounts")
+@RestController
+@RequestMapping("/accounts")
 public class AccountController {
     AccountService accountService;
 
@@ -17,16 +19,15 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @PostMapping("/")
-    Accounts addAccount(String Code , String name ,  AccountType type){
-        return accountService.createAccount(Code,name,type);
+    @PostMapping
+    Accounts addAccount(@RequestBody AccountRequest request){
+        return accountService.createAccount( request.getName(), request.getType());
     }
 
 
-    @GetMapping("/")
+    @GetMapping
     public Page<Accounts> getAccount(
-            @PathVariable String Code,
-            @RequestParam(defaultValue = "0") int pageNumber,
+                @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "50") int pageSize){
         return accountService.getAccounts(pageNumber ,pageSize);
     }

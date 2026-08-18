@@ -1,12 +1,13 @@
 package com.leonxranger.ledger.Services;
+
 import com.leonxranger.ledger.Repository.AccountRepository;
-import com.leonxranger.ledger.entity.Accounts;
 import com.leonxranger.ledger.entity.AccountType;
-import org.springframework.stereotype.Service;
+import com.leonxranger.ledger.entity.Accounts;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
-import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import java.util.UUID;
 
 @Service
 public class AccountService {
@@ -15,10 +16,20 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Accounts createAccount(String code , String name , AccountType type){
-        Accounts newAccount = new Accounts(0L,code,name,type);
+    public Accounts createAccount( String name , AccountType type){
 
-        return accountRepository.save(newAccount);
+
+        try{
+            String code = "ACC-"+ UUID.randomUUID().toString();
+
+            Accounts newAccount = new Accounts(0L,code,name,type);
+
+            return accountRepository.save(newAccount);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public Page<Accounts> getAccounts(int pageNumber, int pageSize){
