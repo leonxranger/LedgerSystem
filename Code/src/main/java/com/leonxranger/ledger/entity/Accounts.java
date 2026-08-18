@@ -13,11 +13,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class Accounts {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_seq_gen")
+    @SequenceGenerator(name = "account_seq_gen", sequenceName = "accounts_seq", allocationSize = 50)
     long id;
 
     @Column(unique = true,nullable = false)//schema constraint to set when creating the table in sql
-    String Code;
+    String code;
 
     @Column(nullable = false)
     String Name;
