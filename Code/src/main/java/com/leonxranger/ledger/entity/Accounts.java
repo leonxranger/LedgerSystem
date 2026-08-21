@@ -27,4 +27,6 @@ public class Accounts {
     @Enumerated(EnumType.STRING) //EQUITY -> 'EQUITY' NOT EQUITY->0,1,2...
     AccountType Type;
 
+    public static class TransactionItems {
+    }
 }
