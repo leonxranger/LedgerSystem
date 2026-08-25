@@ -8,6 +8,7 @@ import lombok.Setter;
 import com.leonxranger.ledger.entity.Transactions;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity
 @Table(name = "transaction_items")
@@ -23,7 +24,7 @@ public class TransactionItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id" , nullable = false)
-    private Transactions transactions;
+    private Transactions transaction;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id",nullable = false)

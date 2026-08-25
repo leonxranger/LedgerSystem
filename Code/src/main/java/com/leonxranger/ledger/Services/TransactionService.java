@@ -2,15 +2,18 @@ package com.leonxranger.ledger.Services;
 
 import com.leonxranger.ledger.Repository.AccountRepository;
 import com.leonxranger.ledger.Repository.TransactionRepository;
+import com.leonxranger.ledger.dto.Response_DTO.TransactionItemResponse;
+import com.leonxranger.ledger.dto.Response_DTO.TransactionResponse;
+import com.leonxranger.ledger.dto.TransactionRequest;
 import com.leonxranger.ledger.entity.Accounts;
 import com.leonxranger.ledger.entity.TransactionItem;
 import com.leonxranger.ledger.entity.Transactions;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
-
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -21,7 +24,7 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
 
     //constructor
-      public TransactionService(AccountRepository accountRepository ,Transactions transaction , TransactionRepository transactionRepository){
+      public TransactionService(AccountRepository accountRepository , TransactionRepository transactionRepository){
           this.accountRepository = accountRepository;
           this.transactionRepository = transactionRepository;
       }
@@ -39,8 +42,22 @@ public class TransactionService {
     }
 
     @Transactional
-    public Transactions recordTransaction(List<TransactionItem> items , String Description){
+    public Transactions recordTransaction(TransactionRequest request){
         try{
+            List<TransactionItem> items = new ArrayList<>();
+            for(var dtoItem : request.getItemlist()){
+                Accounts hollowAccount  = new Accounts();
+                hollowAccount.setCode(dtoItem.getAccountCode());
+
+                TransactionItem item = new TransactionItem();
+                item.setAccount(hollowAccount);
+                item.setAmount(dtoItem.getAmount());
+
+                items.add(item);
+
+            }
+
+
             ValidateTransaction(items);
 
             for(TransactionItem item : items) {
@@ -53,7 +70,7 @@ public class TransactionService {
             newtransaction.setDate(java.time.LocalDateTime.now());
 
             for(TransactionItem item : items){
-                item.setTransactions(newtransaction);
+                item.setTransaction(newtransaction);
             }
 
             newtransaction.setItems(items);
@@ -63,6 +80,26 @@ public class TransactionService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public TransactionResponse mapTodO(Transactions transaction){
+          TransactionResponse response = new TransactionResponse();
+          response.setDate(transaction.getDate());
+          response.setDescription(transaction.getDescription());
+          response.setId(transaction.getId());
+
+          List<TransactionItemResponse> itemResponses = transaction.getItems().stream().map(item ->{
+              TransactionItemResponse  itemresp = new TransactionItemResponse();
+              itemresp.setId(item.getId());
+              itemresp.setAccountCode(item.getAccount().getCode());
+              itemresp.setAmount(item.getAmount());
+
+              return  itemresp;
+          }).toList();
+
+          response.setItems(itemResponses);
+          return response;
+
     }
 
 
