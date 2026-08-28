@@ -56,8 +56,6 @@ public class TransactionService {
                 items.add(item);
 
             }
-
-
             ValidateTransaction(items);
 
             for(TransactionItem item : items) {
