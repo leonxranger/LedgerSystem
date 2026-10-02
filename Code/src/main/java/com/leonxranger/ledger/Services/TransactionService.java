@@ -1,6 +1,7 @@
 package com.leonxranger.ledger.Services;
 
 import com.leonxranger.ledger.Repository.AccountRepository;
+import com.leonxranger.ledger.Repository.ReportRepository;
 import com.leonxranger.ledger.Repository.TransactionRepository;
 import com.leonxranger.ledger.dto.Response_DTO.TransactionItemResponse;
 import com.leonxranger.ledger.dto.Response_DTO.TransactionResponse;
@@ -20,13 +21,17 @@ import java.util.UUID;
 public class TransactionService {
 
 
-    private AccountRepository accountRepository;
-    private TransactionRepository transactionRepository;
+    private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
+    private final BalancedServiceCache balancedServiceCache;
 
     //constructor
-      public TransactionService(AccountRepository accountRepository , TransactionRepository transactionRepository){
+      public TransactionService(AccountRepository accountRepository ,
+                                TransactionRepository transactionRepository
+                                ,BalancedServiceCache balancedServiceCache){
           this.accountRepository = accountRepository;
           this.transactionRepository = transactionRepository;
+          this.balancedServiceCache = balancedServiceCache;
       }
 
     private void ValidateTransaction(List<TransactionItem> items){
@@ -73,7 +78,13 @@ public class TransactionService {
 
             newtransaction.setItems(items);
 
-            return transactionRepository.save(newtransaction);
+            Transactions savedTransaction = transactionRepository.save(newtransaction);
+
+            for(TransactionItem item : savedTransaction.getItems()){
+                balancedServiceCache.clearCache(item.getAccount().getCode());
+            }
+
+            return savedTransaction;
 
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -6,6 +6,7 @@ import jakarta.persistence.MappedSuperclass;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,5 +37,10 @@ public class ReportController {
 
     ){
         return reportingService.getIncomeStatement(StartDate, EndDate);
+    }
+
+    @GetMapping("/{accountCode}")
+    public BigDecimal GetBalance(@PathVariable String accountCode){
+          return  reportingService.getBalance(accountCode);
     }
 }

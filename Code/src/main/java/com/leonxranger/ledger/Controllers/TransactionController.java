@@ -6,10 +6,7 @@ import com.leonxranger.ledger.dto.TransactionRequest;
 import com.leonxranger.ledger.entity.Accounts;
 import com.leonxranger.ledger.entity.TransactionItem;
 import com.leonxranger.ledger.entity.Transactions;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +18,13 @@ public class TransactionController {
     TransactionController(TransactionService transactionService){
         this.transactionService = transactionService;
     }
+
+
+
     @PostMapping
     public TransactionResponse createTransaction(@RequestBody TransactionRequest request){
-            List<TransactionItem> entityItems = new ArrayList<>();
+
+        List<TransactionItem> entityItems = new ArrayList<>();
             for(var dtoItem : request.getItemlist()){
                 Accounts hollowAccount  = new Accounts();
                 hollowAccount.setCode(dtoItem.getAccountCode());
