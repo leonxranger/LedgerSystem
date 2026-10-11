@@ -20,7 +20,7 @@ public class ReconciliationService {
         this.reportingService = reportingService;
     }
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 2 * * ?")
     public void reconcileBalances(){
         logger.info("Starting nightly Ledger reconciliation...");
 
